@@ -1,0 +1,13 @@
+:host {
+  display: block;
+  position: fixed;
+  inset: 0;                // shorthand de top/right/bottom/left: 0
+  z-index: var(--canvas-z);
+  pointer-events: none;    // El canvas no bloquea los clicks a la UI
+}
+
+canvas {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
