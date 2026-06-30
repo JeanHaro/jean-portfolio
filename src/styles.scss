@@ -1,1 +1,12 @@
-/* You can add global styles to this file, and also import other style files */
+// Abstracts
+@forward './scss/abstracts/variables';
+
+// Base
+@forward './scss/base/base';
+@forward './scss/base/typography';
+@forward './scss/base/utilities';
+@forward './scss/base/animations';
+
+// Components
+@forward './scss/components/buttons';
+@forward './scss/components/canvas-ui';

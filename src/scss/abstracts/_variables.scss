@@ -1,0 +1,53 @@
+@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;700;900&family=Inter:wght@300;400;500;600&display=swap');
+
+:root {
+  // ─── TIPOGRAFÍA ───────────────────────────────────
+  --fuente-game:       'Orbitron', sans-serif;   // Headings, nombre, títulos
+  --fuente-principal:  'Inter', sans-serif;       // Cuerpo, descripciones
+
+  // ─── PALETA PRINCIPAL ─────────────────────────────
+  --color-bg:          #0a0a0f;     // Fondo del juego
+  --color-bg-soft:     #12121a;     // Cards, paneles
+  --color-bg-glass:    rgba(255, 255, 255, 0.04); // Glassmorphism
+
+  --color-primary:     #00ffcc;     // Cyan neón — acción principal
+  --color-primary-soft:#00ffcc26;   // Primary con transparencia
+  --color-secondary:   #7b2fff;     // Violeta — acento
+  --color-accent:      #ff2fff;     // Magenta — highlights
+
+  // ─── TEXTOS ───────────────────────────────────────
+  --color-text-1:      #ffffff;     // Títulos
+  --color-text-2:      #a0a0b8;     // Subtítulos, cuerpo
+  --color-text-3:      #5c5c7a;     // Texto deshabilitado, placeholders
+
+  // ─── BORDES ───────────────────────────────────────
+  --color-border:      rgba(255, 255, 255, 0.08);
+  --color-border-glow: rgba(0, 255, 204, 0.3);
+
+  // ─── NOTIFICACIONES ───────────────────────────────
+  --notif-success-base: #00e59b;
+  --notif-success-soft: #00e59b1a;
+  --notif-error-base:   #ff4d6d;
+  --notif-error-soft:   #ff4d6d1a;
+  --notif-warning-base: #ffb703;
+  --notif-warning-soft: #ffb7031a;
+
+  // ─── SIZING (igual que tu sistema: 1rem = 10px) ───
+  --radius-sm:   0.6rem;
+  --radius-md:   1.2rem;
+  --radius-lg:   2rem;
+  --radius-full: 99.9rem;
+
+  --shadow-glow:  0 0 2rem rgba(0, 255, 204, 0.15);
+  --shadow-card:  0 0.8rem 3.2rem rgba(0, 0, 0, 0.4);
+
+  // ─── CANVAS / JUEGO ───────────────────────────────
+  --canvas-z:     0;   // Three.js canvas va abajo
+  --ui-z:       10;    // UI Angular va encima
+  --overlay-z:  20;    // Menú, modals encima de todo
+
+  // ─── TRANSICIONES ─────────────────────────────────
+  --transition-fast:   0.15s ease;
+  --transition-normal: 0.3s ease;
+  --transition-slow:   0.6s cubic-bezier(0.4, 0, 0.2, 1);
+}

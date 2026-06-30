@@ -1,0 +1,28 @@
+html {
+  box-sizing: border-box;
+  font-size: 62.5%; // 1rem = 10px — igual que tu sistema ✅
+  overflow: hidden; // El scroll lo controla GSAP
+}
+
+*, *::after, *::before {
+  box-sizing: inherit;
+}
+
+body {
+  background-color: var(--color-bg);
+  font-family: var(--fuente-principal);
+  color: var(--color-text-2);
+  font-size: 1.6rem;
+  min-height: 100vh;
+  overflow: hidden;
+}
+
+// Canvas Three.js — siempre debajo de la UI Angular
+canvas {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: var(--canvas-z);
+}

@@ -1,0 +1,48 @@
+a {
+  text-decoration: none;
+  color: var(--color-primary);
+}
+
+img { max-width: 100%; }
+
+.hidden {
+  display: none;
+  visibility: hidden;
+}
+
+// Accesibilidad (igual que el tuyo ✅)
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+.b-none  { border: none; }
+.o-none  { outline: none; }
+.none    { @extend .b-none; @extend .o-none; }
+
+// UI sobre el canvas
+.canvas-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;  // Deja pasar clicks al canvas por defecto
+  z-index: var(--ui-z);
+
+  // Los hijos que sí reciben clicks activan esto:
+  & > * { pointer-events: auto; }
+}
+
+.is-loading {
+  pointer-events: none;
+  user-select: none;
+  opacity: 0.6;
+}
