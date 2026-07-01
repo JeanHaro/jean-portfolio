@@ -16,7 +16,7 @@ export const PROJECT_DETAILS: Record<string, ProjectDetail> = {
     slug: 'inventario-app',
     name: 'Inventario App',
     tagline: 'Sistema de gestión de inventario con Angular 22',
-    accent: '#00ffcc',
+    accent: '#0d8a7a',
     status: 'IA en desarrollo',
     overview:
       'Proyecto de aprendizaje práctico enfocado en dominar Signals, Signal Forms y patrones reales de UI como drawers controlados por query params. Consume una API REST propia (inventario-api) construida en paralelo con Express y TypeScript.',
@@ -40,7 +40,7 @@ export const PROJECT_DETAILS: Record<string, ProjectDetail> = {
     slug: 'typed-storage',
     name: '@jeanharo98/typed-storage',
     tagline: 'Ecosistema de 4 paquetes npm — localStorage type-safe',
-    accent: '#7b2fff',
+    accent: '#8a5a3a',
     overview:
       'localStorage y sessionStorage type-safe con una API tipo signal, TTL, sincronización entre pestañas, migraciones de schema y fallback automático a memoria. Publicado en npm con wrappers nativos para Angular y React.',
     stackUsed: [
@@ -63,7 +63,7 @@ export const PROJECT_DETAILS: Record<string, ProjectDetail> = {
     slug: 'front-sports-academy',
     name: 'Sports Academy',
     tagline: 'Plataforma full-stack de matrículas y pagos',
-    accent: '#00e5b8',
+    accent: '#a67c52',
     overview:
       'Aplicación completa para "Forcrack Perú" — gestión de matrículas, control de pagos mensuales y horarios de una academia deportiva, con autenticación de doble factor y generación de comprobantes en PDF.',
     stackUsed: [
@@ -85,7 +85,7 @@ export const PROJECT_DETAILS: Record<string, ProjectDetail> = {
     slug: 'ddd-core',
     name: '@jeanharo98/ddd-core',
     tagline: 'Building blocks de Domain-Driven Design para TypeScript',
-    accent: '#ff2fff',
+    accent: '#b5654a',
     overview:
       'Result, ValueObject, Entity, AggregateRoot, DomainEvent, Guard y Mapper — las piezas base para modelar dominios ricos en TypeScript sin acoplarse a Prisma, TypeORM, NestJS ni Express. Cero dependencias.',
     stackUsed: [

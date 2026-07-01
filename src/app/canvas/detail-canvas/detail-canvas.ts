@@ -33,8 +33,8 @@ export class DetailCanvasComponent implements OnDestroy {
 
     // ─── Escena ────────────────────────────────────────────────────
     this.scene = new THREE.Scene();
-    this.scene.background = new THREE.Color('#0a0a0f');
-    this.scene.fog = new THREE.FogExp2('#0a0a0f', 0.035);
+    this.scene.background = null;
+    this.scene.fog = new THREE.FogExp2('#c9a876', 0.03);
 
     // ─── Cámara ────────────────────────────────────────────────────
     const { width, height } = canvasEl.getBoundingClientRect();
@@ -46,10 +46,11 @@ export class DetailCanvasComponent implements OnDestroy {
     this.renderer = new THREE.WebGLRenderer({
       canvas: canvasEl,
       antialias: !isMobile,
-      alpha: false,
+      alpha: true,
     });
     this.renderer.setSize(width, height, false);
     this.renderer.setPixelRatio(Math.min(window.devicePixelRatio, isMobile ? 1.5 : 2));
+    this.renderer.setClearColor(0x000000, 0);
 
     // ─── Luces ─────────────────────────────────────────────────────
     this.scene.add(new THREE.AmbientLight('#ffffff', 0.3));

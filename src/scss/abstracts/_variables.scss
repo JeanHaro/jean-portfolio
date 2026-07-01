@@ -1,52 +1,47 @@
 @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;700;900&family=Inter:wght@300;400;500;600&display=swap');
 
 :root {
-  // ─── TIPOGRAFÍA ───────────────────────────────────
-  --fuente-game:       'Orbitron', sans-serif;   // Headings, nombre, títulos
-  --fuente-principal:  'Inter', sans-serif;       // Cuerpo, descripciones
+  --fuente-game:       'Orbitron', sans-serif;
+  --fuente-principal:  'Inter', sans-serif;
 
-  // ─── PALETA PRINCIPAL ─────────────────────────────
-  --color-bg:          #0a0a0f;     // Fondo del juego
-  --color-bg-soft:     #12121a;     // Cards, paneles
-  --color-bg-glass:    rgba(255, 255, 255, 0.04); // Glassmorphism
+  // ─── PALETA — invertida para fondo cálido claro ───
+  --color-bg:          #f5ede0;     // Fondo de tarjetas (crema, no blanco puro)
+  --color-bg-soft:     #ede1cf;     // Paneles, un tono más oscuro
+  --color-bg-glass:    rgba(255, 255, 255, 0.55); // Glassmorphism CLARO ahora
 
-  --color-primary:     #00ffcc;     // Cyan neón — acción principal
-  --color-primary-soft:#00ffcc26;   // Primary con transparencia
-  --color-secondary:   #7b2fff;     // Violeta — acento
-  --color-accent:      #ff2fff;     // Magenta — highlights
+  --color-primary:     #0d8a7a;     // Teal atenuado — antes era cyan neón, ahora sobrio
+  --color-primary-soft:#0d8a7a1f;
+  --color-secondary:   #8a5a3a;     // Marrón cálido — reemplaza el violeta neón
+  --color-accent:      #b5654a;     // Terracota — reemplaza el magenta
 
-  // ─── TEXTOS ───────────────────────────────────────
-  --color-text-1:      #ffffff;     // Títulos
-  --color-text-2:      #a0a0b8;     // Subtítulos, cuerpo
-  --color-text-3:      #5c5c7a;     // Texto deshabilitado, placeholders
+  // ─── TEXTOS — oscuros sobre claro ──────────────────
+  --color-text-1:      #2b2620;     // Títulos — casi negro cálido
+  --color-text-2:      #5c5449;     // Cuerpo
+  --color-text-3:      #8a8073;     // Placeholders, deshabilitado
 
-  // ─── BORDES ───────────────────────────────────────
-  --color-border:      rgba(255, 255, 255, 0.08);
-  --color-border-glow: rgba(0, 255, 204, 0.3);
+  // ─── BORDES ────────────────────────────────────────
+  --color-border:      rgba(43, 38, 32, 0.12);
+  --color-border-glow: rgba(13, 138, 122, 0.35);
 
-  // ─── NOTIFICACIONES ───────────────────────────────
-  --notif-success-base: #00e59b;
-  --notif-success-soft: #00e59b1a;
-  --notif-error-base:   #ff4d6d;
-  --notif-error-soft:   #ff4d6d1a;
-  --notif-warning-base: #ffb703;
-  --notif-warning-soft: #ffb7031a;
+  --notif-success-base: #0d8a4a;
+  --notif-success-soft: #0d8a4a1a;
+  --notif-error-base:   #c23b3b;
+  --notif-error-soft:   #c23b3b1a;
+  --notif-warning-base: #b5834a;
+  --notif-warning-soft: #b5834a1a;
 
-  // ─── SIZING (igual que tu sistema: 1rem = 10px) ───
   --radius-sm:   0.6rem;
   --radius-md:   1.2rem;
   --radius-lg:   2rem;
   --radius-full: 99.9rem;
 
-  --shadow-glow:  0 0 2rem rgba(0, 255, 204, 0.15);
-  --shadow-card:  0 0.8rem 3.2rem rgba(0, 0, 0, 0.4);
+  --shadow-glow:  0 0 2rem rgba(13, 138, 122, 0.1);
+  --shadow-card:  0 0.8rem 3.2rem rgba(43, 38, 32, 0.12);
 
-  // ─── CANVAS / JUEGO ───────────────────────────────
-  --canvas-z:     0;   // Three.js canvas va abajo
-  --ui-z:       10;    // UI Angular va encima
-  --overlay-z:  20;    // Menú, modals encima de todo
+  --canvas-z:     0;
+  --ui-z:       10;
+  --overlay-z:  20;
 
-  // ─── TRANSICIONES ─────────────────────────────────
   --transition-fast:   0.15s ease;
   --transition-normal: 0.3s ease;
   --transition-slow:   0.6s cubic-bezier(0.4, 0, 0.2, 1);

@@ -9,20 +9,20 @@ html {
 }
 
 body {
-  background-color: var(--color-bg);
   font-family: var(--fuente-principal);
   color: var(--color-text-2);
   font-size: 1.6rem;
   min-height: 100vh;
   overflow: hidden;
+
+  background:
+    repeating-linear-gradient(
+      90deg,
+      rgba(168, 134, 95, 0.08) 0px,
+      rgba(168, 134, 95, 0.08) 2px,
+      transparent 2px,
+      transparent 40px
+    ),
+    linear-gradient(180deg, #d4b896 0%, #c9a876 100%);
 }
 
-// Canvas Three.js — siempre debajo de la UI Angular
-canvas {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  z-index: var(--canvas-z);
-}

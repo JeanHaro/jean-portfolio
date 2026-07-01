@@ -1,6 +1,7 @@
 import { Service } from '@angular/core';
 import * as THREE from 'three';
 import { GLTFLoader, GLTF } from 'three/examples/jsm/loaders/GLTFLoader.js';
+import { DRACOLoader } from 'three/examples/jsm/loaders/DRACOLoader.js';
 import gsap from 'gsap';
 
 @Service()
@@ -10,6 +11,12 @@ export class CharacterService {
   private camera?: THREE.PerspectiveCamera;
 
   private readonly loader = new GLTFLoader();
+
+constructor() {
+  const dracoLoader = new DRACOLoader();
+  dracoLoader.setDecoderPath('https://www.gstatic.com/draco/versioned/decoders/1.5.6/');
+  this.loader.setDRACOLoader(dracoLoader);
+}
 
   // Límites de movimiento LIBRE dentro de una sección (en unidades de mundo)
   readonly BOUNDS_X = 6;

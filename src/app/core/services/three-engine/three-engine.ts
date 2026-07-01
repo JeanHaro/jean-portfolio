@@ -33,22 +33,31 @@ export class ThreeEngineService {
     this.initRenderers(worldCanvas, carCanvas);
     this.initEnvironment();
     this.initWorldLights();
-    this.initCarLights(); // 👈 el carro necesita SU PROPIA luz — no comparte escena con el mundo
-    this.world.build(this.worldScene);
-    await this.character.load(this.carScene, this.camera); // 👈 el carro va a carScene, no worldScene
+    this.initCarLights();
+
+    try {
+      await this.world.build(this.worldScene); // 👈 envuelto en try/catch
+    } catch (err) {
+      console.error('Error cargando assets del mundo 3D:', err); // 👈 verás el error EXACTO en consola
+    }
+
+    try {
+      await this.character.load(this.carScene, this.camera);
+    } catch (err) {
+      console.error('Error cargando el vehículo:', err);
+    }
+
     this.setupResizeObserver(worldCanvas);
-    this.initDevTools();
-    this.animate();
+    this.animate(); // 👈 SIEMPRE arranca, pase lo que pase con los assets
     this.initialized = true;
   }
 
   private initScenes(): void {
     this.worldScene = new THREE.Scene();
-    this.worldScene.background = new THREE.Color('#0a0a0f');
-    this.worldScene.fog = new THREE.FogExp2('#0a0a0f', 0.02);
+    this.worldScene.background = null; // 👈 CAMBIO — antes era color sólido, ahora transparente
 
     this.carScene = new THREE.Scene();
-    this.carScene.background = null; // 👈 CLAVE — sin fondo, se ve transparente
+    this.carScene.background = null;
   }
 
   private initCamera(canvas: HTMLCanvasElement): void {
@@ -68,10 +77,11 @@ export class ThreeEngineService {
     const pixelRatio = Math.min(window.devicePixelRatio, isMobile ? 1.5 : 2);
 
     this.worldRenderer = new THREE.WebGLRenderer({
-      canvas: worldCanvas, antialias: !isMobile, powerPreference: 'high-performance',
+      canvas: worldCanvas, antialias: !isMobile, alpha: true, powerPreference: 'high-performance', // 👈 agregado alpha: true
     });
     this.worldRenderer.setSize(width, height, false);
     this.worldRenderer.setPixelRatio(pixelRatio);
+    this.worldRenderer.setClearColor(0x000000, 0);
     this.worldRenderer.shadowMap.enabled = !isMobile;
     this.worldRenderer.shadowMap.type    = THREE.PCFSoftShadowMap;
     this.worldRenderer.toneMapping         = THREE.ACESFilmicToneMapping;
