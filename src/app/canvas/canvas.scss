@@ -1,13 +1,20 @@
 :host {
-  display: block;
-  position: fixed;
-  inset: 0;                // shorthand de top/right/bottom/left: 0
-  z-index: var(--canvas-z);
-  pointer-events: none;    // El canvas no bloquea los clicks a la UI
+  display: contents; // el host no interfiere, cada canvas maneja su propio z-index
 }
 
 canvas {
-  display: block;
+  position: fixed;
+  inset: 0;
   width: 100%;
   height: 100%;
+  display: block;
+  pointer-events: none; // nunca bloquea clicks a la UI
+}
+
+.canvas--world {
+  z-index: var(--canvas-z); // 0 — detrás de todo
+}
+
+.canvas--car {
+  z-index: var(--overlay-z); // 20 — encima del texto (ya definido en tus variables globales)
 }

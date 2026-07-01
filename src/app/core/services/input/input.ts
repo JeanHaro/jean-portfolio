@@ -42,13 +42,13 @@ export class InputService implements OnDestroy {
 
     switch (e.key) {
       case 'ArrowRight': case 'd': case 'D':
-        e.preventDefault();
-        this.characterMovement.step('right');
-        break;
+        e.preventDefault(); this.characterMovement.step('right'); break;
       case 'ArrowLeft': case 'a': case 'A':
-        e.preventDefault();
-        this.characterMovement.step('left');
-        break;
+        e.preventDefault(); this.characterMovement.step('left'); break;
+      case 'ArrowUp': case 'w': case 'W':
+        e.preventDefault(); this.characterMovement.step('up'); break;
+      case 'ArrowDown': case 's': case 'S':
+        e.preventDefault(); this.characterMovement.step('down'); break;
     }
   }
 
@@ -69,21 +69,8 @@ export class InputService implements OnDestroy {
     const deltaX = e.changedTouches[0].clientX - this.touchStartX;
     if (Math.abs(deltaX) < this.SWIPE_THRESHOLD) return;
 
-    const dir: InputDirection = deltaX < 0 ? 'right' : 'left';
-    const currentIndex = this.gameState.currentSectionIndex();
-
-    if (dir === 'right' && !this.gameState.isLastSection()) {
-      this.character.enterSectionFromEdge(SECTION_POSITIONS[currentIndex + 1], 'right');
-    } else if (dir === 'left' && !this.gameState.isFirstSection()) {
-      this.character.enterSectionFromEdge(SECTION_POSITIONS[currentIndex - 1], 'left');
-    } else {
-      return; // ya está en el límite, no hace nada
-    }
-
-    this.gameState.lastDirection.set(dir);
-    if (dir === 'right') this.gameState.nextSection();
-    else                 this.gameState.prevSection();
-    this.gameState.isMoving.set(true);
+    const dir = deltaX < 0 ? 'right' : 'left';
+    this.characterMovement.step(dir); // 👈 reusa la misma lógica que el teclado
   }
 
   ngOnDestroy(): void {

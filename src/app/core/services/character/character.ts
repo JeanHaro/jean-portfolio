@@ -6,101 +6,88 @@ import gsap from 'gsap';
 @Service()
 export class CharacterService {
   private model?: THREE.Group;
-  private mixer?: THREE.AnimationMixer;
-  private camera?: THREE.PerspectiveCamera; // 👈 NUEVO
+  private wheels: THREE.Object3D[] = [];
+  private camera?: THREE.PerspectiveCamera;
 
   private readonly loader = new GLTFLoader();
 
-  private hoverTime = 0;
-  private readonly HOVER_AMPLITUDE = 0.15;
-  private readonly HOVER_SPEED = 1.8;
-  private readonly BASE_Y = 0.7;
+  // Límites de movimiento LIBRE dentro de una sección (en unidades de mundo)
+  readonly BOUNDS_X = 6;
+  readonly BOUNDS_Z = 4;
 
-  private readonly FACE_RIGHT = THREE.MathUtils.degToRad(25);
-  private readonly FACE_LEFT  = THREE.MathUtils.degToRad(-25);
-
-  // ❌ ELIMINADO: readonly ENTRY_OFFSET = 8;
-
-  // 👈 NUEVO — ahora recibe también la cámara
   async load(scene: THREE.Scene, camera: THREE.PerspectiveCamera): Promise<void> {
     this.camera = camera;
-    const gltf: GLTF = await this.loader.loadAsync('/assets/models/avatar.glb');
+    const gltf: GLTF = await this.loader.loadAsync('/assets/models/vehicle.glb');
 
     this.model = gltf.scene;
-    this.model.scale.setScalar(1.1);
-    this.model.position.set(0, this.BASE_Y, 2.5);
-    this.model.rotation.y = this.FACE_RIGHT;
+    this.model.scale.setScalar(0.55);
+    this.model.position.set(0, 0, 0);
+    this.model.rotation.y = Math.PI / 2; // orienta el frente del jeep hacia +X (derecha)
+
+    this.model.traverse((child) => {
+      if (child instanceof THREE.Mesh) child.castShadow = true;
+      // Guardamos referencia a las 4 ruedas para rotarlas manualmente
+      if (child.name.includes('wheel')) this.wheels.push(child);
+    });
 
     this.model.traverse((child) => {
       if (child instanceof THREE.Mesh) {
         child.castShadow = true;
+        if (child.name.includes('wheel')) this.wheels.push(child);
+
+        // 👈 NUEVO — recolorea el material "Body" a un tono neutro cálido
         const mat = child.material as THREE.MeshStandardMaterial;
-        if (mat?.name === 'Blue_Light') {
-          mat.emissive = new THREE.Color('#00eaff');
-          mat.emissiveIntensity = 2.2;
+        if (mat?.name === 'Body') {
+          mat.color.set(''); // para cambiar el color
+          mat.roughness = 0.8;
+          mat.metalness = 0.8;
         }
       }
     });
 
     scene.add(this.model);
-
-    if (gltf.animations.length > 0) {
-      this.mixer = new THREE.AnimationMixer(this.model);
-      const action = this.mixer.clipAction(gltf.animations[0]);
-      action.setLoop(THREE.LoopRepeat, Infinity);
-      action.play();
-    }
+    // NO reproducimos la animación embebida — rotamos las ruedas nosotros según velocidad
   }
 
+  getWorldPosition(): { x: number; z: number } {
+    return { x: this.model?.position.x ?? 0, z: this.model?.position.z ?? 0 };
+  }
+
+  //  calcula el ángulo objetivo tomando siempre el camino más corto
+  private shortestAngleTarget(current: number, target: number): number {
+    const twoPi = Math.PI * 2;
+    let delta = (target - current) % twoPi;
+    if (delta > Math.PI)  delta -= twoPi;
+    if (delta < -Math.PI) delta += twoPi;
+    return current + delta;
+  }
+
+  moveTo(x: number, z: number): void {
+    if (!this.model) return;
+
+    const dx = x - this.model.position.x;
+    const dz = z - this.model.position.z;
+    const rawAngle = Math.atan2(dx, dz);
+
+    // 👈 CAMBIO — en vez de animar directo a rawAngle, animamos al equivalente más cercano
+    const targetAngle = this.shortestAngleTarget(this.model.rotation.y, rawAngle);
+
+    gsap.to(this.model.position, { x, z, duration: 0.3, ease: 'power2.out' });
+    gsap.to(this.model.rotation, { y: targetAngle, duration: 0.25, ease: 'power2.out' });
+
+    const distance = Math.sqrt(dx * dx + dz * dz);
+    this.wheels.forEach((wheel) => {
+      gsap.to(wheel.rotation, { x: wheel.rotation.x + distance * 4, duration: 0.3, ease: 'none' });
+    });
+  }
+
+  // En character.ts, agrega antes de dispose():
   update(delta: number): void {
-    if (!this.model) return;
-    this.mixer?.update(delta);
-    this.hoverTime += delta * this.HOVER_SPEED;
-    const bob = Math.sin(this.hoverTime) * this.HOVER_AMPLITUDE;
-    this.model.position.y = this.BASE_Y + bob;
-  }
-
-  getWorldX(): number {
-    return this.model?.position.x ?? 0;
-  }
-
-  // 👈 NUEVO — calcula cuánto es "visible" según FOV/aspect real en ese momento
-  getMovementBoundary(): number {
-    if (!this.camera || !this.model) return 3;
-    const distanceZ = Math.abs(this.camera.position.z - this.model.position.z);
-    const vFovRad   = THREE.MathUtils.degToRad(this.camera.fov);
-    const halfHeight = Math.tan(vFovRad / 2) * distanceZ;
-    const halfWidth  = halfHeight * this.camera.aspect;
-    return Math.min(halfWidth * 0.75, 7);
-  }
-
-  moveWorldXTo(x: number, direction: 'left' | 'right'): void {
-    if (!this.model) return;
-    const facingY = direction === 'right' ? this.FACE_RIGHT : this.FACE_LEFT;
-
-    gsap.timeline()
-      .to(this.model.position, { x, duration: 0.35, ease: 'power2.out' }, 0)
-      .to(this.model.rotation, { y: facingY, duration: 0.25, ease: 'power2.out' }, 0)
-      .to(this.model.scale, { y: 1.18, duration: 0.12, ease: 'power2.out' }, 0)
-      .to(this.model.scale, { y: 1.1,  duration: 0.18, ease: 'power2.in'  }, 0.12);
-  }
-
-  enterSectionFromEdge(sectionCenterX: number, direction: 'left' | 'right'): void {
-    if (!this.model) return;
-
-    const offset = this.getMovementBoundary(); // 👈 dinámico, ya no ENTRY_OFFSET fijo
-    const entryX = direction === 'right'
-      ? sectionCenterX - offset
-      : sectionCenterX + offset;
-
-    const facingY = direction === 'right' ? this.FACE_RIGHT : this.FACE_LEFT;
-
-    gsap.to(this.model.rotation, { y: facingY, duration: 0.3, ease: 'power2.out' });
-    gsap.to(this.model.position, { x: entryX, duration: 1.2, ease: 'power2.inOut' });
+    // Sin animación continua por ahora — el giro de ruedas ya se maneja en moveTo()
   }
 
   dispose(): void {
-    this.mixer?.stopAllAction();
     this.model = undefined;
+    this.wheels = [];
   }
 }

@@ -1,55 +1,62 @@
 import { Service, inject } from '@angular/core';
+import * as THREE from 'three';
 import { GameStateService, SECTION_POSITIONS } from '@core/services/game-state/game-state';
 import { CharacterService } from '@core/services/character/character';
+
+export type MoveDir = 'up' | 'down' | 'left' | 'right';
 
 @Service()
 export class CharacterMovementService {
   private readonly gameState = inject(GameStateService);
   private readonly character = inject(CharacterService);
 
-  private readonly STEP = 3;
-  // ❌ ELIMINADO: private readonly HALF_ZONE = 9;
+  private readonly STEP = 1.2;
 
-  step(direction: 'left' | 'right'): void {
+  step(direction: MoveDir): void {
     if (this.gameState.isMoving()) return;
-
-    const boundary = this.character.getMovementBoundary(); // 👈 NUEVO — se calcula cada vez, siempre actualizado con el tamaño real de pantalla
 
     const currentIndex = this.gameState.currentSectionIndex();
     const sectionX      = SECTION_POSITIONS[currentIndex];
-    const currentWorldX = this.character.getWorldX();
-    const localOffset    = currentWorldX - sectionX;
-    const delta            = direction === 'right' ? this.STEP : -this.STEP;
-    const newLocalOffset   = localOffset + delta;
+    const pos            = this.character.getWorldPosition();
+    const localX          = pos.x - sectionX;
+    const localZ          = pos.z;
 
-    if (newLocalOffset > boundary) {
+    // ─── Arriba/abajo — SOLO movimiento libre, nunca cambia de sección ─
+    if (direction === 'up' || direction === 'down') {
+      const dz = direction === 'up' ? -this.STEP : this.STEP;
+      const newZ = THREE.MathUtils.clamp(localZ + dz, -this.character.BOUNDS_Z, this.character.BOUNDS_Z);
+      this.character.moveTo(sectionX + localX, newZ);
+      return;
+    }
+
+    // ─── Izquierda/derecha — libre hasta el borde, luego cruza sección ─
+    const dx = direction === 'right' ? this.STEP : -this.STEP;
+    const newLocalX = localX + dx;
+
+    if (newLocalX > this.character.BOUNDS_X) {
       if (this.gameState.isLastSection()) {
-        this.character.moveWorldXTo(sectionX + boundary, direction); // 👈 clamp con el MISMO límite
+        this.character.moveTo(sectionX + this.character.BOUNDS_X, localZ);
         return;
       }
       const nextX = SECTION_POSITIONS[currentIndex + 1];
-
-      this.gameState.lastDirection.set('right');
-      this.character.enterSectionFromEdge(nextX, 'right');
+      this.character.moveTo(nextX - this.character.BOUNDS_X, localZ);
       this.gameState.nextSection();
       this.gameState.isMoving.set(true);
       return;
     }
 
-    if (newLocalOffset < -boundary) {
+    if (newLocalX < -this.character.BOUNDS_X) {
       if (this.gameState.isFirstSection()) {
-        this.character.moveWorldXTo(sectionX - boundary, direction); // 👈 clamp con el MISMO límite
+        this.character.moveTo(sectionX - this.character.BOUNDS_X, localZ);
         return;
       }
       const prevX = SECTION_POSITIONS[currentIndex - 1];
-
-      this.gameState.lastDirection.set('left');
-      this.character.enterSectionFromEdge(prevX, 'left');
+      this.character.moveTo(prevX + this.character.BOUNDS_X, localZ);
       this.gameState.prevSection();
       this.gameState.isMoving.set(true);
       return;
     }
 
-    this.character.moveWorldXTo(sectionX + newLocalOffset, direction);
+    this.character.moveTo(sectionX + newLocalX, localZ);
   }
 }

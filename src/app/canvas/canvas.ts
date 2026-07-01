@@ -14,21 +14,24 @@ import { InputService }       from '@core/services/input/input';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class CanvasComponent implements OnDestroy {
-  private readonly canvas      = viewChild.required<ElementRef<HTMLCanvasElement>>('canvas');
+  private readonly worldCanvas = viewChild.required<ElementRef<HTMLCanvasElement>>('worldCanvas');
+  private readonly carCanvas   = viewChild.required<ElementRef<HTMLCanvasElement>>('carCanvas');
   private readonly threeEngine = inject(ThreeEngineService);
   private readonly gameState   = inject(GameStateService);
   private readonly input       = inject(InputService);
 
   constructor() {
     afterNextRender(async () => {
-      await this.threeEngine.init(this.canvas().nativeElement);
+      await this.threeEngine.init(
+        this.worldCanvas().nativeElement,
+        this.carCanvas().nativeElement
+      );
     });
 
     effect(() => {
       const targetX = this.gameState.targetCameraX();
-
       this.threeEngine.moveCameraTo(targetX, () => {
-        this.gameState.isMoving.set(false); // 👈 SOLO apaga, nunca enciende aquí
+        this.gameState.isMoving.set(false);
       });
     });
   }
