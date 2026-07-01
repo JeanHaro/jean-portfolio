@@ -1,2 +1,7 @@
 allowBuilds:
   '@scarf/scarf': true
+onlyBuiltDependencies:
+  - esbuild
+  - '@parcel/watcher'
+  - lmdb
+  - msgpackr-extract
