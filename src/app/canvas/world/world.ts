@@ -65,7 +65,7 @@ export class WorldService {
 
     // ─── Contact (6) ────────────────────────────────────────────────────
     const contactX = SECTION_POSITIONS[6];
-    this.placeProp(scene, typewriter.scene, contactX - DX, -DZ, 4.0, 0.5);
+    this.placeProp(scene, typewriter.scene, contactX - 10, -5.2, 3.2, 0.5);
     this.placeProp(scene, plant.scene,      contactX + DX,  DZ, 4.0, -0.4);
   }
 
