@@ -59,4 +59,14 @@ export class CharacterMovementService {
 
     this.character.moveTo(sectionX + newLocalX, localZ);
   }
+
+  jumpToSection(index: number): void {
+    if (this.gameState.isMoving()) return;
+
+    const targetX = SECTION_POSITIONS[index];
+    this.character.driveToSection(targetX); // el carro viaja también, no se queda atrás
+
+    this.gameState.goToSection(index); // cambia el índice (isMoving aún false aquí, pasa la guarda)
+    this.gameState.isMoving.set(true); // AHORA bloqueamos, hasta que la cámara termine
+  }
 }

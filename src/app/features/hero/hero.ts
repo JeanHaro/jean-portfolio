@@ -6,6 +6,9 @@ import {
 import { isPlatformBrowser } from '@angular/common';
 import gsap from 'gsap';
 
+// Servicios
+import { CharacterMovementService } from '@core/services/character-movement/character-movement';
+
 interface StackItem {
   name: string;
   category: 'frontend' | 'ia' | 'tools';
@@ -19,6 +22,7 @@ interface StackItem {
 })
 export class HeroComponent implements OnInit, OnDestroy {
   private readonly platformId = inject(PLATFORM_ID);
+  private readonly characterMovement = inject(CharacterMovementService);
   private timeline?: gsap.core.Timeline;
 
   // ─── Template refs ────────────────────────────────────────────────
@@ -87,5 +91,9 @@ export class HeroComponent implements OnInit, OnDestroy {
     link.href     = '/cv-jean-haro.pdf'; // ← pondrás el PDF en public/
     link.download = 'CV_Jean_Carlos_Haro_Luyo.pdf';
     link.click();
+  }
+
+  goToProjects(): void {
+    this.characterMovement.jumpToSection(4);
   }
 }

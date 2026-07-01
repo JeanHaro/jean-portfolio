@@ -1,8 +1,9 @@
-import { Service } from '@angular/core';
+import { inject, Service } from '@angular/core';
 import * as THREE from 'three';
 import { GLTFLoader, GLTF } from 'three/examples/jsm/loaders/GLTFLoader.js';
 import { DRACOLoader } from 'three/examples/jsm/loaders/DRACOLoader.js';
 import gsap from 'gsap';
+import { LoadingService } from '../loading/loading';
 
 @Service()
 export class CharacterService {
@@ -10,7 +11,9 @@ export class CharacterService {
   private wheels: THREE.Object3D[] = [];
   private camera?: THREE.PerspectiveCamera;
 
-  private readonly loader = new GLTFLoader();
+  private readonly loadingService = inject(LoadingService);
+    private readonly loader = new GLTFLoader(this.loadingService.manager); 
+
 
 constructor() {
   const dracoLoader = new DRACOLoader();
@@ -86,6 +89,12 @@ constructor() {
     this.wheels.forEach((wheel) => {
       gsap.to(wheel.rotation, { x: wheel.rotation.x + distance * 4, duration: 0.3, ease: 'none' });
     });
+  }
+
+  // Agrega este método nuevo, junto a moveWorldXTo:
+  driveToSection(targetX: number): void {
+    if (!this.model) return;
+    gsap.to(this.model.position, { x: targetX, z: 0, duration: 1.0, ease: 'power2.inOut' });
   }
 
   // En character.ts, agrega antes de dispose():

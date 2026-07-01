@@ -4,14 +4,15 @@ import { toSignal } from '@angular/core/rxjs-interop';
 import { filter, map, startWith } from 'rxjs';
 
 // Componentes
-import { CanvasComponent }      from './canvas/canvas';
-import { HeroComponent }        from './features/hero/hero';
-import { AboutComponent }       from './features/about/about';
-import { SkillsComponent }      from './features/skills/skills';
-import { ExperienceComponent }  from './features/experience/experience';
-import { ProjectsComponent }    from './features/projects/projects';
+import { CanvasComponent } from './canvas/canvas';
+import { LoaderComponent } from '@core/loader/loader';
+import { HeroComponent }  from './features/hero/hero';
+import { AboutComponent } from './features/about/about';
+import { SkillsComponent } from './features/skills/skills';
+import { ExperienceComponent } from './features/experience/experience';
+import { ProjectsComponent } from './features/projects/projects';
 import { AchievementsComponent } from './features/achievements/achievements';
-import { ContactComponent }     from './features/contact/contact';
+import { ContactComponent } from './features/contact/contact';
 
 // Servicios
 import { GameStateService } from '@core/services/game-state/game-state';
@@ -23,6 +24,7 @@ import { GameStateService } from '@core/services/game-state/game-state';
 
     // Componentes
     CanvasComponent,
+    LoaderComponent,
     HeroComponent,
     AboutComponent,
     SkillsComponent,

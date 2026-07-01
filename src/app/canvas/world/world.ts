@@ -1,12 +1,15 @@
-import { Service } from '@angular/core';
+import { inject, Service } from '@angular/core';
 import * as THREE from 'three';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
 import { DRACOLoader } from 'three/examples/jsm/loaders/DRACOLoader.js';
 import { SECTION_POSITIONS } from '@core/services/game-state/game-state';
+import { LoadingService } from '@core/services/loading/loading';
 
 @Service()
 export class WorldService {
-  private readonly loader = new GLTFLoader();
+  private readonly loadingService = inject(LoadingService);
+  private readonly loader = new GLTFLoader(this.loadingService.manager);
+
 
   constructor() {
     const dracoLoader = new DRACOLoader();
