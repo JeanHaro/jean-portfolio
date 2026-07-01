@@ -38,6 +38,7 @@ export class InputService implements OnDestroy {
   }
 
   private handleKeyDown(e: KeyboardEvent): void {
+    if (!this.gameState.isGameRoute()) return;
     if (this.isTypingInFormField(e.target)) return;
 
     switch (e.key) {
@@ -64,6 +65,7 @@ export class InputService implements OnDestroy {
   }
 
   private handleTouchEnd(e: TouchEvent): void {
+    if (!this.gameState.isGameRoute()) return;
     if (this.gameState.isMoving()) return;
 
     const deltaX = e.changedTouches[0].clientX - this.touchStartX;

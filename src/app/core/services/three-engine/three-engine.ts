@@ -5,11 +5,13 @@ import Stats from 'stats.js';
 import gsap from 'gsap';
 import { CharacterService } from '@core/services/character/character';
 import { WorldService } from '@canvas/world/world';
+import { GameStateService, SECTION_POSITIONS } from '../game-state/game-state';
 
 @Service()
 export class ThreeEngineService {
   private readonly character = inject(CharacterService);
   private readonly world     = inject(WorldService);
+  private readonly gameState = inject(GameStateService);
 
   // Compartido entre ambas capas
   private camera!: THREE.PerspectiveCamera;
@@ -46,6 +48,8 @@ export class ThreeEngineService {
     } catch (err) {
       console.error('Error cargando el vehículo:', err);
     }
+
+    this.camera.position.x = SECTION_POSITIONS[this.gameState.currentSectionIndex()];
 
     this.setupResizeObserver(worldCanvas);
     this.animate(); // 👈 SIEMPRE arranca, pase lo que pase con los assets

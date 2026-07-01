@@ -1,7 +1,5 @@
 import { Component, inject, ChangeDetectionStrategy, computed } from '@angular/core';
-import { Router, RouterOutlet, NavigationEnd } from '@angular/router';
-import { toSignal } from '@angular/core/rxjs-interop';
-import { filter, map, startWith } from 'rxjs';
+import { RouterOutlet } from '@angular/router';
 
 // Componentes
 import { CanvasComponent } from './canvas/canvas';
@@ -39,17 +37,4 @@ import { GameStateService } from '@core/services/game-state/game-state';
 })
 export class App {
   readonly gameState = inject(GameStateService);
-  private readonly router = inject(Router);
-
-  // Solo mostramos el juego (canvas + secciones) cuando NO estamos en /projects/:slug
-  private readonly currentUrl = toSignal(
-    this.router.events.pipe(
-      filter((e): e is NavigationEnd => e instanceof NavigationEnd),
-      map(e => e.urlAfterRedirects),
-      startWith(this.router.url)
-    ),
-    { initialValue: this.router.url }
-  );
-
-  readonly isGameRoute = computed(() => !this.currentUrl().startsWith('/projects/'));
 }

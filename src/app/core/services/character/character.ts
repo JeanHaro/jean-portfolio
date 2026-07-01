@@ -4,6 +4,7 @@ import { GLTFLoader, GLTF } from 'three/examples/jsm/loaders/GLTFLoader.js';
 import { DRACOLoader } from 'three/examples/jsm/loaders/DRACOLoader.js';
 import gsap from 'gsap';
 import { LoadingService } from '../loading/loading';
+import { GameStateService, SECTION_POSITIONS } from '../game-state/game-state';
 
 @Service()
 export class CharacterService {
@@ -11,8 +12,9 @@ export class CharacterService {
   private wheels: THREE.Object3D[] = [];
   private camera?: THREE.PerspectiveCamera;
 
+  private readonly gameState = inject(GameStateService);
   private readonly loadingService = inject(LoadingService);
-    private readonly loader = new GLTFLoader(this.loadingService.manager); 
+  private readonly loader = new GLTFLoader(this.loadingService.manager);
 
 
 constructor() {
@@ -31,7 +33,9 @@ constructor() {
 
     this.model = gltf.scene;
     this.model.scale.setScalar(0.55);
-    this.model.position.set(0, 0, 0);
+    const currentX = SECTION_POSITIONS[this.gameState.currentSectionIndex()];
+    this.model.position.set(currentX, 0, 0);
+    
     this.model.rotation.y = Math.PI / 2; // orienta el frente del jeep hacia +X (derecha)
 
     this.model.traverse((child) => {
