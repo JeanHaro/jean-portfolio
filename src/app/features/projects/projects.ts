@@ -3,10 +3,13 @@ import {
   ChangeDetectionStrategy,
   ElementRef, viewChildren, inject, PLATFORM_ID
 } from '@angular/core';
+import { RouterLink } from '@angular/router';
 import { isPlatformBrowser } from '@angular/common';
 import gsap from 'gsap';
 
+
 interface FeaturedProject {
+  slug: string;
   name: string;
   description: string;
   stack: string[];
@@ -27,6 +30,9 @@ interface ProjectCategory {
 
 @Component({
   selector: 'app-projects',
+  imports: [
+    RouterLink
+  ],
   templateUrl: './projects.html',
   styleUrl: './projects.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -41,6 +47,7 @@ export class ProjectsComponent implements OnInit, OnDestroy {
   // ─── PROYECTOS DESTACADOS ────────────────────────────────────────
   readonly featured: FeaturedProject[] = [
     {
+      slug: 'inventario-app',
       name: 'inventario-app',
       description: 'Sistema de gestión de inventario con Angular 22 (Signals + Signal Forms) y backend en Express/TypeScript. Drawers controlados por query params para deep-linking y navegación nativa.',
       stack: ['Angular 22', 'Signals', 'Express', 'TypeScript'],
@@ -48,6 +55,7 @@ export class ProjectsComponent implements OnInit, OnDestroy {
       status: 'IA en desarrollo',
     },
     {
+      slug: 'typed-storage',
       name: '@jeanharo98/typed-storage',
       description: 'Ecosistema de 4 paquetes publicados en npm: localStorage type-safe con API tipo signal, TTL, sync entre pestañas, migraciones de schema y wrappers nativos para Angular y React.',
       stack: ['TypeScript', 'npm', 'Angular', 'React'],
@@ -55,12 +63,14 @@ export class ProjectsComponent implements OnInit, OnDestroy {
       demo: 'https://www.npmjs.com/package/@jeanharo98/typed-storage',
     },
     {
+      slug: 'front-sports-academy',
       name: 'front-sports-academy',
       description: 'Plataforma full-stack para gestión de matrículas y pagos de una academia deportiva, con autenticación de doble factor, generación de PDF y notificaciones en tiempo real.',
       stack: ['Angular', 'Node.js', 'REST API', 'JWT'],
       github: 'https://github.com/JeanHaro/front-sports-academy',
     },
     {
+      slug: 'ddd-core',
       name: '@jeanharo98/ddd-core',
       description: 'Building blocks de Domain-Driven Design para TypeScript: Result, ValueObject, Entity, AggregateRoot y Guard. Cero dependencias, agnóstico de framework.',
       stack: ['TypeScript', 'DDD', 'npm', 'Zero-deps'],

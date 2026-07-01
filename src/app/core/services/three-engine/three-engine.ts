@@ -1,25 +1,31 @@
-import { Service, isDevMode } from '@angular/core';
+import { Service, isDevMode, inject } from '@angular/core';
 import * as THREE from 'three';
+import { RoomEnvironment } from 'three/examples/jsm/environments/RoomEnvironment.js';
 import Stats from 'stats.js';
 import gsap from 'gsap';
+import { CharacterService } from '@core/services/character/character';
 
 @Service()
 export class ThreeEngineService {
+  private readonly character = inject(CharacterService);
+
   private scene!: THREE.Scene;
   private camera!: THREE.PerspectiveCamera;
   private renderer!: THREE.WebGLRenderer;
   private animationId!: number;
   private resizeObserver?: ResizeObserver;
   private stats?: Stats;
-  private testMesh?: THREE.Mesh;
+  private clock = new THREE.Clock();
   private initialized = false;
 
-  init(canvas: HTMLCanvasElement): void {
+  async init(canvas: HTMLCanvasElement): Promise<void> {
     this.initScene();
     this.initCamera(canvas);
     this.initRenderer(canvas);
+    this.initEnvironment();
     this.initLights();
     this.addTestScene();
+    await this.character.load(this.scene, this.camera); // 👈 ahora pasa también la cámara
     this.setupResizeObserver(canvas);
     this.initDevTools();
     this.animate();
@@ -41,6 +47,8 @@ export class ThreeEngineService {
     this.camera = new THREE.PerspectiveCamera(fov, width / height, 0.1, 1000);
     this.camera.position.set(0, 2, camZ);
     this.camera.lookAt(0, 0, 0);
+
+    this.scene.add(this.camera);
   }
 
   private initRenderer(canvas: HTMLCanvasElement): void {
@@ -59,13 +67,21 @@ export class ThreeEngineService {
     this.renderer.shadowMap.type    = THREE.PCFSoftShadowMap;
     this.renderer.toneMapping         = THREE.ACESFilmicToneMapping;
     this.renderer.toneMappingExposure = 1;
+    this.renderer.outputColorSpace    = THREE.SRGBColorSpace;
+  }
+
+  private initEnvironment(): void {
+    const pmremGenerator = new THREE.PMREMGenerator(this.renderer);
+    const envTexture = pmremGenerator.fromScene(new RoomEnvironment(), 0.04).texture;
+    this.scene.environment = envTexture;
+    pmremGenerator.dispose();
   }
 
   private initLights(): void {
-    const ambient = new THREE.AmbientLight('#ffffff', 0.4);
+    const ambient = new THREE.AmbientLight('#ffffff', 0.5);
     this.scene.add(ambient);
 
-    const sun = new THREE.DirectionalLight('#ffffff', 1.5);
+    const sun = new THREE.DirectionalLight('#ffffff', 2);
     sun.position.set(5, 10, 5);
     sun.castShadow = true;
     sun.shadow.mapSize.setScalar(2048);
@@ -80,46 +96,35 @@ export class ThreeEngineService {
     const violet = new THREE.PointLight('#7b2fff', 2, 12);
     violet.position.set(4, 1, -2);
     this.scene.add(violet);
+
+    // Luz de relleno anclada a la cámara — siempre ilumina lo que está enfrente
+    const fillLight = new THREE.PointLight('#ffffff', 1.8, 10);
+    fillLight.position.set(0, 1, 3);
+    this.camera.add(fillLight);
   }
 
   private addTestScene(): void {
-    const cubeGeo = new THREE.BoxGeometry(1.5, 1.5, 1.5);
-    const cubeMat = new THREE.MeshStandardMaterial({
-      color: '#00ffcc',
-      emissive: '#00ffcc',
-      emissiveIntensity: 0.2,
-      roughness: 0.2,
-      metalness: 0.9,
-    });
-    this.testMesh = new THREE.Mesh(cubeGeo, cubeMat);
-    this.testMesh.castShadow = true;
-    this.testMesh.position.y = 0.5;
-    this.scene.add(this.testMesh);
-
-    // Colocamos 7 cubos — uno por sección — para ver el movimiento horizontal
+    const SECTIONS_TEMP = Array(7).fill(null);
     SECTIONS_TEMP.forEach((_, i) => {
-      if (i === 0) return; // el primero ya existe (testMesh)
-      const geo  = new THREE.BoxGeometry(1.5, 1.5, 1.5);
-      const mat  = new THREE.MeshStandardMaterial({
+      if (i === 0) return;
+      const geo = new THREE.BoxGeometry(1.5, 1.5, 1.5);
+      const mat = new THREE.MeshStandardMaterial({
         color: i % 2 === 0 ? '#7b2fff' : '#ff2fff',
         roughness: 0.3,
         metalness: 0.8,
+        transparent: true,
+        opacity: 0.12,
       });
       const mesh = new THREE.Mesh(geo, mat);
-      mesh.position.set(i * 20, 0.5, 0); // 👈 cada cubo a 20 unidades del anterior
-      mesh.castShadow = true;
+      mesh.position.set(i * 20, 0.5, -3);
       this.scene.add(mesh);
     });
 
-    const floorGeo = new THREE.PlaneGeometry(200, 30); // más largo para cubrir todas las secciones
-    const floorMat = new THREE.MeshStandardMaterial({
-      color: '#12121a',
-      roughness: 0.8,
-      metalness: 0.2,
-    });
+    const floorGeo = new THREE.PlaneGeometry(200, 30);
+    const floorMat = new THREE.MeshStandardMaterial({ color: '#12121a', roughness: 0.8, metalness: 0.2 });
     const floor = new THREE.Mesh(floorGeo, floorMat);
     floor.rotation.x = -Math.PI / 2;
-    floor.position.set(60, -1, 0); // centrado entre todas las secciones
+    floor.position.set(60, -1, 0);
     floor.receiveShadow = true;
     this.scene.add(floor);
 
@@ -128,33 +133,23 @@ export class ThreeEngineService {
     this.scene.add(grid);
   }
 
-  private animate(): void {
-    this.animationId = requestAnimationFrame(() => this.animate());
-
+  private animate = (): void => {
+    this.animationId = requestAnimationFrame(this.animate);
     this.stats?.begin();
 
-    if (this.testMesh) {
-      this.testMesh.rotation.x += 0.005;
-      this.testMesh.rotation.y += 0.01;
-    }
+    const delta = this.clock.getDelta();
+    this.character.update(delta);
 
     this.renderer.render(this.scene, this.camera);
-
     this.stats?.end();
-  }
+  };
 
-  // ─── API PÚBLICA — GSAP mueve la cámara ──────────────────────────
   moveCameraTo(targetX: number, onComplete?: () => void): void {
-    if (!this.initialized || !this.camera) {  // 👈 NUEVO — guard
+    if (!this.initialized || !this.camera) {
       onComplete?.();
       return;
     }
-    gsap.to(this.camera.position, {
-      x:        targetX,
-      duration: 1.2,
-      ease:     'power2.inOut',
-      onComplete,
-    });
+    gsap.to(this.camera.position, { x: targetX, duration: 1.2, ease: 'power2.inOut', onComplete });
   }
 
   private setupResizeObserver(canvas: HTMLCanvasElement): void {
@@ -177,17 +172,9 @@ export class ThreeEngineService {
 
   private initDevTools(): void {
     if (!isDevMode()) return;
-
     this.stats = new Stats();
     this.stats.showPanel(0);
-    Object.assign(this.stats.dom.style, {
-      position: 'fixed',
-      bottom: '0',
-      right: '0',
-      top: 'auto',        
-      left: 'auto',
-      zIndex: '9999',
-    });
+    Object.assign(this.stats.dom.style, { position: 'fixed', bottom: '0', right: '0', top: 'auto', left: 'auto', zIndex: '9999' });
     document.body.appendChild(this.stats.dom);
   }
 
@@ -198,12 +185,7 @@ export class ThreeEngineService {
     cancelAnimationFrame(this.animationId);
     this.resizeObserver?.disconnect();
     this.renderer.dispose();
-
-    if (this.stats?.dom.parentNode) {
-      document.body.removeChild(this.stats.dom);
-    }
+    this.character.dispose();
+    if (this.stats?.dom.parentNode) document.body.removeChild(this.stats.dom);
   }
 }
-
-// TEMP — solo para el test de movimiento horizontal
-const SECTIONS_TEMP = Array(7).fill(null);

@@ -1,33 +1,30 @@
 import { Service, OnDestroy, inject, PLATFORM_ID } from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
-import { Subject } from 'rxjs';
-import { GameStateService } from '@core/services/game-state/game-state';
+import { GameStateService, SECTION_POSITIONS } from '@core/services/game-state/game-state';
+import { CharacterMovementService } from '@core/services/character-movement/character-movement';
+import { CharacterService } from '@core/services/character/character';
 
 export type InputDirection = 'left' | 'right';
 
 @Service()
 export class InputService implements OnDestroy {
-  private readonly platformId    = inject(PLATFORM_ID);
-  private readonly gameState     = inject(GameStateService);
+  private readonly platformId        = inject(PLATFORM_ID);
+  private readonly gameState         = inject(GameStateService);
+  private readonly characterMovement = inject(CharacterMovementService);
+  private readonly character         = inject(CharacterService); // 👈 NUEVO
 
-  // Observable que emite cada vez que el usuario navega
-  readonly direction$ = new Subject<InputDirection>();
-
-  // Touch — guardamos X inicial del toque
   private touchStartX = 0;
-  private readonly SWIPE_THRESHOLD = 50; // px mínimos para contar como swipe
+  private readonly SWIPE_THRESHOLD = 50;
 
-  // Referencias a los listeners para poder removerlos en destroy
-  private readonly onKeyDown  = this.handleKeyDown.bind(this);
+  private readonly onKeyDown    = this.handleKeyDown.bind(this);
   private readonly onTouchStart = this.handleTouchStart.bind(this);
   private readonly onTouchEnd   = this.handleTouchEnd.bind(this);
 
   constructor() {
-    if (!isPlatformBrowser(this.platformId)) return; // SSR safety
+    if (!isPlatformBrowser(this.platformId)) return;
     this.bindEvents();
   }
 
-  // ─── BIND / UNBIND ───────────────────────────────────────────────
   private bindEvents(): void {
     window.addEventListener('keydown',    this.onKeyDown);
     window.addEventListener('touchstart', this.onTouchStart, { passive: true });
@@ -40,62 +37,56 @@ export class InputService implements OnDestroy {
     window.removeEventListener('touchend',   this.onTouchEnd);
   }
 
-  // ─── KEYBOARD ────────────────────────────────────────────────────
-  private isTypingInFormField(target: EventTarget | null): boolean {
-    if (!(target instanceof HTMLElement)) return false;
-
-    const tag = target.tagName;
-    return (
-      tag === 'INPUT' ||
-      tag === 'TEXTAREA' ||
-      tag === 'SELECT' ||
-      target.isContentEditable
-    );
-  }
-
   private handleKeyDown(e: KeyboardEvent): void {
     if (this.isTypingInFormField(e.target)) return;
 
     switch (e.key) {
-      case 'ArrowRight':
-      case 'd':
-      case 'D':
+      case 'ArrowRight': case 'd': case 'D':
         e.preventDefault();
-        this.navigate('right');
+        this.characterMovement.step('right');
         break;
-      case 'ArrowLeft':
-      case 'a':
-      case 'A':
+      case 'ArrowLeft': case 'a': case 'A':
         e.preventDefault();
-        this.navigate('left');
+        this.characterMovement.step('left');
         break;
     }
   }
 
-  // ─── TOUCH ───────────────────────────────────────────────────────
+  private isTypingInFormField(target: EventTarget | null): boolean {
+    if (!(target instanceof HTMLElement)) return false;
+    const tag = target.tagName;
+    return tag === 'INPUT' || tag === 'TEXTAREA' || tag === 'SELECT' || target.isContentEditable;
+  }
+
+  // ─── Mobile — swipe salta de sección directo, reposiciona síncrono ─
   private handleTouchStart(e: TouchEvent): void {
     this.touchStartX = e.touches[0].clientX;
   }
 
   private handleTouchEnd(e: TouchEvent): void {
+    if (this.gameState.isMoving()) return;
+
     const deltaX = e.changedTouches[0].clientX - this.touchStartX;
+    if (Math.abs(deltaX) < this.SWIPE_THRESHOLD) return;
 
-    if (Math.abs(deltaX) < this.SWIPE_THRESHOLD) return; // movimiento muy corto, ignorar
+    const dir: InputDirection = deltaX < 0 ? 'right' : 'left';
+    const currentIndex = this.gameState.currentSectionIndex();
 
-    this.navigate(deltaX < 0 ? 'right' : 'left');
-  }
+    if (dir === 'right' && !this.gameState.isLastSection()) {
+      this.character.enterSectionFromEdge(SECTION_POSITIONS[currentIndex + 1], 'right');
+    } else if (dir === 'left' && !this.gameState.isFirstSection()) {
+      this.character.enterSectionFromEdge(SECTION_POSITIONS[currentIndex - 1], 'left');
+    } else {
+      return; // ya está en el límite, no hace nada
+    }
 
-  // ─── NAVIGATE ────────────────────────────────────────────────────
-  private navigate(dir: InputDirection): void {
+    this.gameState.lastDirection.set(dir);
     if (dir === 'right') this.gameState.nextSection();
     else                 this.gameState.prevSection();
-
-    this.direction$.next(dir);
+    this.gameState.isMoving.set(true);
   }
 
-  // ─── DESTROY ─────────────────────────────────────────────────────
   ngOnDestroy(): void {
     this.unbindEvents();
-    this.direction$.complete();
   }
 }
