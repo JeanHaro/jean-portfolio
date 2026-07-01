@@ -182,8 +182,10 @@ export class ThreeEngineService {
     this.stats.showPanel(0);
     Object.assign(this.stats.dom.style, {
       position: 'fixed',
-      top: '0',
-      left: '0',
+      bottom: '0',
+      right: '0',
+      top: 'auto',        
+      left: 'auto',
       zIndex: '9999',
     });
     document.body.appendChild(this.stats.dom);

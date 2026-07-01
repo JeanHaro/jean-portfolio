@@ -1,0 +1,278 @@
+@use 'abstracts/variables' as *;
+
+.experience {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 4rem 6rem;
+  overflow-y: auto;
+
+  @media (max-width: 768px) {
+    padding: 6rem 2rem 3rem;
+  }
+
+  &__header { margin-bottom: 4rem; }
+
+  &__tag {
+    display: block;
+    font-family: var(--fuente-game);
+    font-size: 1.2rem;
+    color: var(--color-primary);
+    letter-spacing: 0.15em;
+    margin-bottom: 1.2rem;
+  }
+
+  &__title {
+    font-family: var(--fuente-game);
+    font-size: clamp(2.6rem, 3.6vw, 4rem);
+    font-weight: 900;
+    color: var(--color-text-1);
+    &--accent { color: var(--color-primary); }
+  }
+
+  &__timeline {
+    position: relative;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 3.2rem;
+    max-width: 120rem;
+
+    @media (max-width: 1024px) {
+      grid-template-columns: 1fr;
+      gap: 0;
+    }
+  }
+
+  &__line {
+    position: absolute;
+    top: 0.7rem;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, var(--color-primary) 0%, var(--color-secondary) 50%, var(--color-primary) 100%);
+    opacity: 0.3;
+
+    @media (max-width: 1024px) {
+      top: 0;
+      bottom: 0;
+      left: 0.7rem;
+      right: auto;
+      width: 2px;
+      height: auto;
+      background: linear-gradient(180deg, var(--color-primary) 0%, var(--color-secondary) 50%, var(--color-primary) 100%);
+    }
+  }
+
+  &__entry {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    gap: 1.6rem;
+
+    @media (max-width: 1024px) {
+      flex-direction: row;
+      margin-bottom: 1.6rem;
+      &:last-child { margin-bottom: 0; }
+    }
+  }
+
+  &__node {
+    width: 1.4rem;
+    height: 1.4rem;
+    border-radius: 50%;
+    background: var(--color-bg);
+    border: 2px solid var(--color-primary);
+    z-index: 1;
+    flex-shrink: 0;
+    position: relative;
+
+    &--current {
+      box-shadow: 0 0 0 4px var(--color-primary-soft);
+      &::after {
+        content: '';
+        position: absolute;
+        inset: 0.3rem;
+        border-radius: 50%;
+        background: var(--color-primary);
+      }
+    }
+
+    @media (max-width: 1024px) { margin-top: 1.2rem; }
+  }
+
+  // ─── CARD ────────────────────────────────────────────────────────
+  &__card {
+    position: relative;
+    background: var(--color-bg-glass);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    padding: 2rem;
+    transition: border-color var(--transition-normal);
+
+    &:hover { border-color: var(--color-border-glow); }
+
+    @media (max-width: 1024px) {
+      flex: 1;
+      margin-left: 1.6rem;
+      padding: 1.6rem;
+    }
+  }
+
+  &__badge {
+    font-size: 1rem;
+    font-weight: 700;
+    color: var(--color-primary);
+    background: var(--color-primary-soft);
+    padding: 0.3rem 0.8rem;
+    border-radius: var(--radius-full);
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    z-index: 1;
+    flex-shrink: 0;
+
+    @media (min-width: 1025px) {
+      position: absolute;
+      top: 1.6rem;
+      right: 1.6rem;
+    }
+  }
+
+  // Header — en desktop se ve como texto normal (botón sin estilo de botón)
+  &__card-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    width: 100%;
+    background: none;
+    border: none;
+    padding: 0;
+    text-align: left;
+    cursor: default;
+    color: inherit;
+    font: inherit;
+
+    @media (max-width: 1024px) {
+      cursor: pointer;
+    }
+  }
+
+  &__header-right {
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+    flex-shrink: 0;
+    margin-top: 0.2rem;
+  }
+
+  &__chevron {
+    display: none;
+    flex-shrink: 0;
+    color: var(--color-text-3);
+    transition: transform var(--transition-normal);
+    margin-left: 1rem;
+
+    @media (max-width: 1024px) {
+      display: block;
+    }
+  }
+
+  &__card--expanded &__chevron {
+    transform: rotate(180deg);
+    color: var(--color-primary);
+  }
+
+  &__company {
+    font-family: var(--fuente-game);
+    font-size: 1.8rem;
+    font-weight: 700;
+    color: var(--color-text-1);
+    margin-bottom: 0.4rem;
+    padding-right: 5rem;
+
+    @media (max-width: 1024px) { padding-right: 0; font-size: 1.6rem; }
+  }
+
+  &__role {
+    font-size: 1.3rem;
+    color: var(--color-primary);
+    font-weight: 600;
+    margin-bottom: 0.4rem;
+  }
+
+  &__period {
+    font-size: 1.1rem;
+    color: var(--color-text-3);
+  }
+
+  // ─── BODY COLAPSABLE ─────────────────────────────────────────────
+  &__card-body {
+    margin-top: 1.4rem;
+
+    @media (max-width: 1024px) {
+      display: grid;
+      grid-template-rows: 0fr;
+      opacity: 0;
+      margin-top: 0;
+      transition: grid-template-rows 0.35s ease, opacity 0.25s ease, margin-top 0.35s ease;
+    }
+  }
+
+  // el único hijo del grid, donde aplica el overflow hidden
+  &__card-body-inner {
+    @media (max-width: 1024px) {
+      overflow: hidden;
+      min-height: 0;
+    }
+  }
+
+  &__card--expanded &__card-body {
+    @media (max-width: 1024px) {
+      grid-template-rows: 1fr;
+      opacity: 1;
+      margin-top: 1.4rem;
+    }
+  }
+
+  &__note {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.6rem;
+    font-size: 1.15rem;
+    color: var(--color-secondary);
+    background: rgba(123, 47, 255, 0.08);
+    border-left: 2px solid var(--color-secondary);
+    padding: 0.8rem 1rem;
+    border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+    margin-bottom: 1.6rem;
+    line-height: 1.5;
+    svg { flex-shrink: 0; margin-top: 0.2rem; }
+  }
+
+  &__bullets {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 0.9rem;
+
+    li {
+      position: relative;
+      padding-left: 1.4rem;
+      font-size: 1.25rem;
+      color: var(--color-text-2);
+      line-height: 1.6;
+
+      &::before {
+        content: '';
+        position: absolute;
+        left: 0;
+        top: 0.7rem;
+        width: 0.5rem;
+        height: 0.5rem;
+        border-radius: 50%;
+        background: var(--color-primary);
+      }
+    }
+  }
+}

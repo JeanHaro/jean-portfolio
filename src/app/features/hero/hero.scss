@@ -1,0 +1,197 @@
+@use 'abstracts/variables' as *;
+
+.hero {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 4rem 6rem;
+
+  @media (max-width: 768px) {
+    padding: 3rem 2.4rem;
+    justify-content: flex-end;
+    padding-bottom: 10rem;
+  }
+
+  // ─── CONTENIDO ───────────────────────────────────────────────────
+  &__content {
+    max-width: 60rem;
+  }
+
+  // ─── SALUDO ──────────────────────────────────────────────────────
+  &__greet {
+    display: block;
+    font-family: var(--font-mono, monospace);
+    font-size: 1.4rem;
+    color: var(--color-primary);
+    letter-spacing: 0.15em;
+    margin-bottom: 1.2rem;
+  }
+
+  // ─── NOMBRE ──────────────────────────────────────────────────────
+  &__name {
+    font-family: var(--fuente-game);
+    font-size: clamp(3.6rem, 6vw, 7rem);
+    font-weight: 900;
+    line-height: 1.05;
+    color: var(--color-text-1);
+    margin-bottom: 1.6rem;
+
+    &--accent {
+      color: var(--color-primary);
+      display: block;
+    }
+  }
+
+  // ─── TÍTULO ──────────────────────────────────────────────────────
+  &__title {
+    font-size: clamp(1.4rem, 2vw, 1.8rem);
+    color: var(--color-text-2);
+    margin-bottom: 2rem;
+    letter-spacing: 0.02em;
+
+    &--separator {
+      margin: 0 0.8rem;
+      color: var(--color-secondary);
+    }
+  }
+
+  // ─── BIO ─────────────────────────────────────────────────────────
+  &__bio {
+    font-size: clamp(1.3rem, 1.5vw, 1.5rem);
+    color: var(--color-text-2);
+    line-height: 1.8;
+    max-width: 52rem;
+    margin-bottom: 2.8rem;
+
+    @media (max-width: 768px) {
+      display: none; // En mobile ocupa mucho espacio, la bio va en About
+    }
+  }
+
+  // ─── STACK BADGES ────────────────────────────────────────────────
+  &__stack {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.8rem;
+    margin-bottom: 3.2rem;
+  }
+
+  &__badge {
+    font-size: 1.1rem;
+    padding: 0.4rem 1rem;
+    border-radius: var(--radius-full);
+    border: 1px solid;
+    font-weight: 500;
+    letter-spacing: 0.04em;
+
+    &--frontend {
+      color: var(--color-primary);
+      border-color: var(--color-primary);
+      background: var(--color-primary-soft);
+    }
+
+    &--ia {
+      color: var(--color-secondary);
+      border-color: var(--color-secondary);
+      background: rgba(123, 47, 255, 0.1);
+    }
+
+    &--tools {
+      color: var(--color-text-2);
+      border-color: var(--color-border);
+      background: var(--color-bg-glass);
+    }
+  }
+
+  // ─── BOTONES ─────────────────────────────────────────────────────
+  &__buttons {
+    display: flex;
+    gap: 1.6rem;
+    flex-wrap: wrap;
+  }
+
+  // ─── HINT NAVEGACIÓN ─────────────────────────────────────────────
+  &__hint {
+    position: absolute;
+    bottom: 3.2rem;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    align-items: center;
+    gap: 1.2rem;
+    white-space: nowrap;
+  }
+
+  &__hint-text {
+    font-size: 1.2rem;
+    color: var(--color-text-3);
+    letter-spacing: 0.06em;
+  }
+
+  &__hint-keys {
+    display: flex;
+    gap: 0.4rem;
+
+    kbd {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 2.8rem;
+      height: 2.8rem;
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-sm);
+      background: var(--color-bg-glass);
+      color: var(--color-text-3);
+      font-size: 1.2rem;
+      font-family: inherit;
+    }
+  }
+
+  &__hint-mobile {
+    font-size: 1.2rem;
+    color: var(--color-text-3);
+
+    @media (min-width: 769px) {
+      display: none;
+    }
+  }
+}
+
+// ─── BOTONES GLOBALES (por ahora van aquí, luego a _buttons.scss) ──
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.8rem;
+  padding: 1.2rem 2.4rem;
+  border-radius: var(--radius-md);
+  font-size: 1.4rem;
+  font-weight: 600;
+  cursor: pointer;
+  border: none;
+  transition: transform var(--transition-fast),
+              box-shadow var(--transition-fast);
+
+  &:active { transform: scale(0.97); }
+
+  &--primary {
+    background: var(--color-primary);
+    color: var(--color-bg);
+
+    &:hover {
+      box-shadow: 0 0 2rem rgba(0, 255, 204, 0.4);
+    }
+  }
+
+  &--secondary {
+    background: transparent;
+    color: var(--color-primary);
+    border: 1px solid var(--color-primary);
+
+    &:hover {
+      background: var(--color-primary-soft);
+    }
+  }
+}

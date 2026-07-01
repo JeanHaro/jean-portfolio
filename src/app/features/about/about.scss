@@ -1,0 +1,229 @@
+@use 'abstracts/variables' as *;
+
+.about {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  padding: 4rem 6rem;
+
+  @media (max-width: 768px) {
+    padding: 2.4rem;
+    align-items: flex-start;
+    padding-top: 6rem;
+    overflow-y: auto;
+  }
+
+  // ─── LAYOUT ──────────────────────────────────────────────────────
+  &__layout {
+    display: grid;
+    grid-template-columns: 28rem 1fr;
+    gap: 6rem;
+    width: 100%;
+    max-width: 100rem;
+
+    @media (max-width: 1024px) {
+      grid-template-columns: 1fr;
+      gap: 3rem;
+    }
+  }
+
+  // ─── COLUMNA IZQUIERDA ───────────────────────────────────────────
+  &__left {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 3.2rem;
+
+    @media (max-width: 1024px) {
+      flex-direction: row;
+      align-items: center;
+      justify-content: flex-start;
+      gap: 2.4rem;
+    }
+
+    @media (max-width: 768px) {
+      flex-direction: column;
+      align-items: flex-start;
+    }
+  }
+
+  // ─── AVATAR ──────────────────────────────────────────────────────
+  &__avatar-frame {
+    position: relative;
+    width: 16rem;
+    height: 16rem;
+
+    @media (max-width: 768px) {
+      width: 10rem;
+      height: 10rem;
+    }
+  }
+
+  &__avatar-placeholder {
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    background: var(--color-bg-soft);
+    border: 2px solid var(--color-primary);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    z-index: 1;
+  }
+
+  &__avatar-initials {
+    font-family: var(--fuente-game);
+    font-size: 4rem;
+    font-weight: 700;
+    color: var(--color-primary);
+
+    @media (max-width: 768px) {
+      font-size: 2.6rem;
+    }
+  }
+
+  // Anillos animados alrededor del avatar
+  &__avatar-ring {
+    position: absolute;
+    inset: -0.8rem;
+    border-radius: 50%;
+    border: 1px solid var(--color-primary);
+    opacity: 0.3;
+    animation: ring-pulse 3s ease-in-out infinite;
+
+    &--2 {
+      inset: -1.6rem;
+      opacity: 0.15;
+      animation-delay: 1.5s;
+    }
+  }
+
+  // ─── HIGHLIGHTS ──────────────────────────────────────────────────
+  &__highlights {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.2rem;
+    width: 100%;
+  }
+
+  &__highlight {
+    background: var(--color-bg-glass);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    padding: 1.2rem;
+    text-align: center;
+    transition: border-color var(--transition-normal);
+
+    &:hover {
+      border-color: var(--color-border-glow);
+    }
+  }
+
+  &__highlight-value {
+    display: block;
+    font-family: var(--fuente-game);
+    font-size: 2rem;
+    font-weight: 700;
+    color: var(--color-primary);
+    margin-bottom: 0.4rem;
+  }
+
+  &__highlight-label {
+    font-size: 1rem;
+    color: var(--color-text-3);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    line-height: 1.3;
+  }
+
+  // ─── COLUMNA DERECHA ─────────────────────────────────────────────
+  &__right {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 3.2rem;
+  }
+
+  // ─── CONTENIDO ───────────────────────────────────────────────────
+  &__tag {
+    display: block;
+    font-family: var(--fuente-game);
+    font-size: 1.2rem;
+    color: var(--color-primary);
+    letter-spacing: 0.15em;
+    margin-bottom: 1.2rem;
+  }
+
+  &__title {
+    font-family: var(--fuente-game);
+    font-size: clamp(2.8rem, 4vw, 4.8rem);
+    font-weight: 900;
+    line-height: 1.1;
+    color: var(--color-text-1);
+    margin-bottom: 2rem;
+
+    &--accent {
+      color: var(--color-primary);
+    }
+  }
+
+  &__bio {
+    font-size: clamp(1.3rem, 1.4vw, 1.5rem);
+    color: var(--color-text-2);
+    line-height: 1.8;
+    margin-bottom: 1.6rem;
+
+    &--secondary {
+      color: var(--color-text-3);
+      margin-bottom: 0;
+    }
+  }
+
+  // ─── HOBBIES ─────────────────────────────────────────────────────
+  &__hobbies-label {
+    display: block;
+    font-size: 1.1rem;
+    color: var(--color-text-3);
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    margin-bottom: 1.2rem;
+  }
+
+  &__hobbies-grid {
+    display: flex;
+    gap: 1.2rem;
+    flex-wrap: wrap;
+  }
+
+  &__hobby {
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+    background: var(--color-bg-glass);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-full);
+    padding: 0.8rem 1.6rem;
+    transition: border-color var(--transition-normal),
+                background var(--transition-normal);
+
+    &:hover {
+      border-color: var(--color-border-glow);
+      background: var(--color-primary-soft);
+    }
+  }
+
+  &__hobby-icon { font-size: 1.8rem; }
+
+  &__hobby-name {
+    font-size: 1.3rem;
+    color: var(--color-text-2);
+  }
+}
+
+// ─── ANIMACIÓN RINGS ─────────────────────────────────────────────────
+@keyframes ring-pulse {
+  0%, 100% { transform: scale(1);    opacity: 0.3; }
+  50%       { transform: scale(1.05); opacity: 0.1; }
+}

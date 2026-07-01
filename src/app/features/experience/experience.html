@@ -1,0 +1,77 @@
+<section class="experience">
+
+  <div class="experience__header">
+    <span class="experience__tag">// experiencia</span>
+    <h2 class="experience__title">
+      Mi camino <span class="experience__title--accent">profesional</span>
+    </h2>
+  </div>
+
+  <div class="experience__timeline">
+
+    <div class="experience__line" aria-hidden="true"></div>
+
+    @for (job of jobs; track job.company; let i = $index) {
+      <div class="experience__entry">
+
+        <div
+          class="experience__node"
+          [class.experience__node--current]="job.current"
+          #nodeEl
+        ></div>
+
+        <div
+          class="experience__card"
+          [class.experience__card--expanded]="expandedIndex() === i"
+          #cardEl
+        >
+
+          <!-- Header — clickeable solo en mobile vía CSS, sin afectar desktop -->
+          <button class="experience__card-header" (click)="toggleExpand(i)" [attr.aria-expanded]="expandedIndex() === i">
+            <div>
+              <h3 class="experience__company">{{ job.company }}</h3>
+              <p class="experience__role">{{ job.role }}</p>
+              <p class="experience__period">{{ job.period }}</p>
+            </div>
+
+            <div class="experience__header-right">
+              @if (job.current) {
+                <span class="experience__badge">Actual</span>
+              }
+              <svg class="experience__chevron" width="20" height="20" viewBox="0 0 24 24" fill="none"
+                  stroke="currentColor" stroke-width="2" aria-hidden="true">
+                <polyline points="6 9 12 15 18 9"/>
+              </svg>
+            </div>
+          </button>
+
+          <!-- Contenido colapsable -->
+          <div class="experience__card-body">
+            <div class="experience__card-body-inner">
+              @if (job.note) {
+                <p class="experience__note">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none"
+                      stroke="currentColor" stroke-width="2" aria-hidden="true">
+                    <circle cx="12" cy="12" r="10"/>
+                    <line x1="12" y1="8" x2="12" y2="12"/>
+                    <line x1="12" y1="16" x2="12.01" y2="16"/>
+                  </svg>
+                  {{ job.note }}
+                </p>
+              }
+
+              <ul class="experience__bullets">
+                @for (bullet of job.bullets; track bullet) {
+                  <li>{{ bullet }}</li>
+                }
+              </ul>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    }
+
+  </div>
+
+</section>

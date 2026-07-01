@@ -1,0 +1,51 @@
+<section class="achievements">
+
+  <div class="achievements__header">
+    <span class="achievements__tag">// logros</span>
+    <h2 class="achievements__title">
+      Reconocimientos y <span class="achievements__title--accent">certificaciones</span>
+    </h2>
+  </div>
+
+  <!-- Highlights principales -->
+  <div class="achievements__highlights">
+    @for (item of highlights; track item.title) {
+      <div class="achievements__highlight" #highlightEl>
+        <span class="achievements__highlight-badge">{{ item.badge }}</span>
+        <h3 class="achievements__highlight-title">{{ item.title }}</h3>
+        <p class="achievements__highlight-org">{{ item.org }} · {{ item.period }}</p>
+        <p class="achievements__highlight-desc">{{ item.description }}</p>
+      </div>
+    }
+  </div>
+
+  <!-- Certificaciones -->
+  <div class="achievements__certs">
+    <h3 class="achievements__certs-title">Certificaciones y cursos</h3>
+
+    <div class="achievements__certs-grid">
+      @for (cert of certifications; track cert.verifyUrl) {
+
+        <a [href]="cert.verifyUrl !== '#' ? cert.verifyUrl : null"
+          target="_blank"
+          rel="noopener"
+          class="achievements__cert"
+          [class.achievements__cert--disabled]="cert.verifyUrl === '#'"
+          #certEl
+        >
+          <div class="achievements__cert-icon">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+              <path d="M12 15l-2-2h-3a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v6a2 2 0 0 1-2 2h-3l-2 2z"/>
+              <circle cx="12" cy="9" r="2"/>
+            </svg>
+          </div>
+          <div class="achievements__cert-info">
+            <span class="achievements__cert-name">{{ cert.name }}</span>
+            <span class="achievements__cert-meta">{{ cert.org }} · {{ cert.year }}</span>
+          </div>
+        </a>
+      }
+    </div>
+  </div>
+
+</section>

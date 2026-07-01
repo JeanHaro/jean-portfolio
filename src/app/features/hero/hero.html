@@ -1,0 +1,64 @@
+<section class="hero">
+
+  <!-- Contenido principal -->
+  <div class="hero__content">
+
+    <span class="hero__greet" #greet>// hello world</span>
+
+    <h1 class="hero__name" #name>
+      Jean Carlos<br>
+      <span class="hero__name--accent">Haro Luyo</span>
+    </h1>
+
+    <p class="hero__title" #title>
+      Frontend Developer
+      <span class="hero__title--separator">·</span>
+      Angular + AI Automation
+    </p>
+
+    <p class="hero__bio" #bio>
+      Desarrollador Frontend con casi 3 años en el mundo web, especializado
+      en Angular desde la versión 8 hasta la 22 y TypeScript a nivel
+      arquitectural. Me apasiona construir aplicaciones sólidas, automatizar
+      procesos con IA y crear herramientas que otros devs puedan usar.
+      Aprendo rápido y siempre por cuenta propia.
+    </p>
+
+    <!-- Stack badges -->
+    <div class="hero__stack" #stack>
+      @for (item of stackItems; track item.name) {
+        <span class="hero__badge hero__badge--{{ item.category }}">
+          {{ item.name }}
+        </span>
+      }
+    </div>
+
+    <!-- CTAs -->
+    <div class="hero__buttons" #buttons>
+      <button class="btn btn--primary" (click)="downloadCV()">
+        <span>Ver CV</span>
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none"
+            stroke="currentColor" stroke-width="2" aria-hidden="true">
+          <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+          <polyline points="7 10 12 15 17 10"/>
+          <line x1="12" y1="15" x2="12" y2="3"/>
+        </svg>
+      </button>
+
+      <button class="btn btn--secondary">
+        Ver proyectos
+      </button>
+    </div>
+  </div>
+
+  <!-- Hint de navegación -->
+  <div class="hero__hint" #hint>
+    <span class="hero__hint-text">Explora mi portfolio</span>
+    <div class="hero__hint-keys">
+      <kbd>←</kbd>
+      <kbd>→</kbd>
+    </div>
+    <span class="hero__hint-mobile">o desliza</span>
+  </div>
+
+</section>

@@ -1,0 +1,74 @@
+<section class="about">
+
+  <div class="about__layout">
+
+    <!-- Columna izquierda: avatar + highlights -->
+    <div class="about__left">
+
+      <!-- Avatar placeholder — en Fase 5 va el avatar 3D real -->
+      <div class="about__avatar" #avatar>
+        <div class="about__avatar-frame">
+          <div class="about__avatar-placeholder">
+            <span class="about__avatar-initials">JH</span>
+          </div>
+          <div class="about__avatar-ring"></div>
+          <div class="about__avatar-ring about__avatar-ring--2"></div>
+        </div>
+      </div>
+
+      <!-- Stats highlights -->
+      <div class="about__highlights" #highlightsEl>
+        @for (item of highlights; track item.label) {
+          <div class="about__highlight">
+            <span class="about__highlight-value">{{ item.value }}</span>
+            <span class="about__highlight-label">{{ item.label }}</span>
+          </div>
+        }
+      </div>
+
+    </div>
+
+    <!-- Columna derecha: bio + hobbies -->
+    <div class="about__right">
+
+      <div class="about__content" #content>
+        <span class="about__tag">// sobre mí</span>
+
+        <h2 class="about__title">
+          Un dev que no para<br>
+          <span class="about__title--accent">de aprender</span>
+        </h2>
+
+        <p class="about__bio">
+          Desarrollador Frontend con casi 3 años en el mundo web, especializado
+          en Angular desde la versión 8 hasta la 22 y TypeScript a nivel
+          arquitectural. Me apasiona construir aplicaciones sólidas, automatizar
+          procesos con IA y crear herramientas que otros devs puedan usar.
+          Aprendo rápido y siempre por cuenta propia.
+        </p>
+
+        <p class="about__bio about__bio--secondary">
+          Mi diferencial está en combinar el desarrollo frontend con automatización
+          inteligente — usando Make, n8n y MCP con Claude para optimizar flujos
+          que antes tomaban horas. Si hay algo que se puede mejorar, lo propongo
+          y lo construyo.
+        </p>
+      </div>
+
+      <!-- Hobbies -->
+      <div class="about__hobbies" #hobbiesEl>
+        <span class="about__hobbies-label">fuera del código</span>
+        <div class="about__hobbies-grid">
+          @for (hobby of hobbies; track hobby.label) {
+            <div class="about__hobby">
+              <span class="about__hobby-icon" aria-hidden="true">{{ hobby.icon }}</span>
+              <span class="about__hobby-name">{{ hobby.label }}</span>
+            </div>
+          }
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+</section>

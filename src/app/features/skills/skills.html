@@ -1,0 +1,51 @@
+<section class="skills">
+
+  <div class="skills__header">
+    <span class="skills__tag">// stack técnico</span>
+    <h2 class="skills__title">
+      Herramientas que <span class="skills__title--accent">domino</span>
+    </h2>
+  </div>
+
+  <div class="skills__tabs">
+    @for (category of categories; track category.title; let i = $index) {
+      <button
+        class="skills__tab skills__tab--{{ category.accent }}"
+        [class.skills__tab--active]="activeTab() === i"
+        (click)="setActiveTab(i)"
+        #tabEl
+      >
+        {{ category.title }}
+      </button>
+    }
+  </div>
+
+  <div class="skills__grid">
+    @for (category of categories; track category.title; let i = $index) {
+      <div
+        class="skills__category"
+        [class.skills__category--active]="activeTab() === i"
+      >
+        <h3 class="skills__category-title skills__category-title--{{ category.accent }}">
+          {{ category.title }}
+        </h3>
+
+        <div class="skills__list">
+          @for (skill of category.skills; track skill.name) {
+            <div class="skills__item">
+              <span class="skills__item-name">{{ skill.name }}</span>
+              <div class="skills__bar">
+                <div
+                  class="skills__bar-fill skills__bar-fill--{{ category.accent }}"
+                  #fillEl
+                  [style.width.%]="levelToWidth(skill.level)"
+                ></div>
+              </div>
+            </div>
+          }
+        </div>
+      </div>
+    }
+  </div>
+
+</section>

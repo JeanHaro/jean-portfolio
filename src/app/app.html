@@ -1,4 +1,15 @@
-<!-- Canvas Three.js — siempre debajo (z-index 0) -->
 <app-canvas />
+
+<main class="canvas-overlay">
+  @switch (gameState.currentSection()) {
+    @case ('hero')         { <app-hero /> }
+    @case ('about')        { <app-about /> }
+    @case ('skills')       { <app-skills /> }
+    @case ('experience')   { <app-experience /> }
+    @case ('projects')     { <app-projects /> }
+    @case ('achievements') { <app-achievements /> }
+    @case ('contact')      { <app-contact /> }
+  }
+</main>
 
 <router-outlet />
